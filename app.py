@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from google import genai
+from google.genai import types
 
 # ================== Page Config ==================
 st.set_page_config(
@@ -132,6 +133,7 @@ with st.sidebar:
     st.header(" Settings")
     st.markdown("**Model in use**")
     st.code(MODEL_NAME)
+    st.markdown("**Thinking**: Disabled")
 
     if st.button("🗑 Clear Chat"):
         st.session_state.messages = []
@@ -165,17 +167,24 @@ with st.container():
 # ================== Gemini Response Function ==================
 def get_ai_response(messages):
     try:
-        contents = []
-        for m in messages:
-            contents.append({
+        contents = [
+            {
                 "role": m["role"],
                 "parts": [{"text": m["content"]}]
-            })
+            }
+            for m in messages
+        ]
 
         response = client.models.generate_content(
             model=MODEL_NAME,
-            contents=contents
+            contents=contents,
+            config=types.GenerateContentConfig(
+                thinking_config=types.ThinkingConfig(
+                    thinking_budget=0  # Thinking disabled
+                )
+            )
         )
+
         return response.text
 
     except Exception as e:
