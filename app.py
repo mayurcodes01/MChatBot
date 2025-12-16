@@ -63,21 +63,21 @@ section[data-testid="stSidebar"] {
     border-right: 1px solid #262626;
 }
 
-section[data-testid="stSidebar"] * {
-    color: #e5e5e5;
-}
 
-/* Sidebar buttons */
+/* Sidebar button fix */
 section[data-testid="stSidebar"] button {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #ffffff !important;
+    color: #000000 !important;
     border-radius: 10px;
     font-weight: 500;
+    border: none;
 }
 
-section[data-testid="stSidebar"] button:hover {
-    background-color: #e5e5e5;
+/* Button icon */
+section[data-testid="stSidebar"] button svg {
+    fill: #000000 !important;
 }
+
 
 /* ===== Chat Input ===== */
 div[data-testid="stChatInput"] textarea {
@@ -205,4 +205,5 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
 
