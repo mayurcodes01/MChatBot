@@ -14,65 +14,118 @@ API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 st.markdown("""
 <style>
-/* Global */
+/* ===== Global ===== */
 html, body, [class*="css"] {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: #000000;
+    color: #e5e5e5;
 }
 
-/* Header */
+/* Remove Streamlit default background */
+.stApp {
+    background-color: #000000;
+}
+
+/* ===== Header ===== */
 .header {
-    background: linear-gradient(135deg, #4f46e5, #9333ea);
-    padding: 20px;
-    border-radius: 16px;
-    color: white;
+    background-color: #000000;
+    padding: 24px;
+    border-radius: 12px;
     text-align: center;
     margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 1px solid #262626;
 }
 
 .header h1 {
     margin: 0;
     font-size: 2.2rem;
+    color: #ffffff;
+    font-weight: 600;
 }
 
 .header p {
-    margin-top: 5px;
-    opacity: 0.85;
+    margin-top: 6px;
+    color: #a3a3a3;
+    font-size: 0.95rem;
 }
 
-/* Chat container */
+/* ===== Chat Container ===== */
 .chat-box {
-    background-color: #f9fafb;
-    padding: 15px;
-    border-radius: 16px;
-    box-shadow: inset 0 0 0 1px #e5e7eb;
+    background-color: #000000;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #262626;
 }
 
-/* Sidebar */
+/* ===== Sidebar ===== */
 section[data-testid="stSidebar"] {
-    background-color: #0f172a;
+    background-color: #000000;
+    border-right: 1px solid #262626;
 }
 
 section[data-testid="stSidebar"] * {
-    color: #e5e7eb;
+    color: #e5e5e5;
 }
 
+/* Sidebar buttons */
 section[data-testid="stSidebar"] button {
-    background-color: #6366f1;
-    color: white;
+    background-color: #ffffff;
+    color: #000000;
     border-radius: 10px;
+    font-weight: 500;
 }
 
-/* Chat input */
+section[data-testid="stSidebar"] button:hover {
+    background-color: #e5e5e5;
+}
+
+/* ===== Chat Input ===== */
 div[data-testid="stChatInput"] textarea {
-    border-radius: 14px;
+    background-color: #0a0a0a;
+    color: #ffffff;
+    border-radius: 12px;
     padding: 12px;
+    border: 1px solid #262626;
 }
 
-/* Chat bubbles */
+div[data-testid="stChatInput"] textarea::placeholder {
+    color: #737373;
+}
+
+/* ===== Chat Messages ===== */
 div[data-testid="stChatMessage"] {
-    border-radius: 14px;
-    padding: 8px;
+    background-color: #000000;
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid #262626;
+    margin-bottom: 10px;
+}
+
+/* User message */
+div[data-testid="stChatMessage"][data-role="user"] {
+    background-color: #0a0a0a;
+}
+
+/* Assistant message */
+div[data-testid="stChatMessage"][data-role="assistant"] {
+    background-color: #000000;
+}
+
+/* Code blocks */
+pre {
+    background-color: #0a0a0a !important;
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #262626;
+}
+
+/* Scrollbar (optional, clean look) */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: #262626;
+    border-radius: 10px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -152,3 +205,4 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
