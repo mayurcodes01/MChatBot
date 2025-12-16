@@ -178,11 +178,8 @@ def get_ai_response(messages):
         response = client.models.generate_content(
             model=MODEL_NAME,
             contents=contents,
-            config=types.GenerateContentConfig(
-                thinking_config=types.ThinkingConfig(
-                    thinking_budget=0  # Thinking disabled
-                )
-            )
+            config=types.GenerateContentConfig()
+
         )
 
         return response.text
@@ -211,3 +208,4 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
