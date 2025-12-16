@@ -4,7 +4,7 @@ import os
 
 st.set_page_config(
     page_title="MNeuron",
-    page_icon="🌐"
+    page_icon="🌐",
     layout="centered"
 )
 
@@ -306,5 +306,6 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
 
 
