@@ -1,5 +1,14 @@
 # M-NeuraChat 
 
+## Live Demo
+
+You can test the live deployed version of M-NeuraChat here:
+
+**Live App:**  
+https://mchatbot-nvghhdv3yynaudxz9jhicf.streamlit.app/
+
+The application is hosted on Streamlit and allows you to interact with the chatbot directly from your browser.
+
 ## Overview
 
 M-NeuraChat is a simple Python chatbot application. It runs as a web or command-line service, depending on how `app.py` is implemented, and handles user input to produce responses using basic logic or configured rules.
