@@ -16,7 +16,7 @@ API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 st.markdown(
     """
-    <h1 style="text-align:center;"> Mayur's AI Chatbot</h1>
+    <h1 style="text-align:center;"> MChatbot</h1>
     <p style="text-align:center; color:gray;">
     Powered by OpenRouter • Built with Streamlit
     </p>
@@ -95,3 +95,4 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
