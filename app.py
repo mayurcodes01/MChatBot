@@ -132,7 +132,7 @@ pre {
 
 st.markdown("""
 <div class="header">
-    <h1>MChatbot</h1>
+    <h1>M-NeuraChat</h1>
     <p>Powered by OpenRouter • Built with Streamlit</p>
 </div>
 """, unsafe_allow_html=True)
@@ -205,5 +205,6 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
 
 
