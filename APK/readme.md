@@ -1,2 +1,2 @@
 
-## Just Download and Install and Ready to use app.
+## Just Download , Install and Ready to use app.
