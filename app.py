@@ -1,32 +1,38 @@
 import streamlit as st
-import requests
 import os
+import google.generativeai as genai
 
+# ================== Page Config ==================
 st.set_page_config(
     page_title="M-NeuraChat",
-    page_icon="",
+    page_icon="🤖",
     layout="centered"
 )
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-MODEL = "google/gemma-3n-e4b-it:free"
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# ================== Gemini Setup ==================
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+if not GEMINI_API_KEY:
+    st.error("GEMINI_API_KEY not found. Set it as an environment variable.")
+    st.stop()
+
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+# ================== Styles ==================
 st.markdown("""
 <style>
-/* ===== Global ===== */
 html, body, [class*="css"] {
     font-family: 'Segoe UI', system-ui, sans-serif;
     background-color: #000000;
     color: #e5e5e5;
 }
 
-/* Remove Streamlit default background */
 .stApp {
     background-color: #000000;
 }
 
-/* ===== Header ===== */
+/* Header */
 .header {
     background-color: #000000;
     padding: 24px;
@@ -49,7 +55,7 @@ html, body, [class*="css"] {
     font-size: 0.95rem;
 }
 
-/* ===== Chat Container ===== */
+/* Chat container */
 .chat-box {
     background-color: #000000;
     padding: 16px;
@@ -57,14 +63,12 @@ html, body, [class*="css"] {
     border: 1px solid #262626;
 }
 
-/* ===== Sidebar ===== */
+/* Sidebar */
 section[data-testid="stSidebar"] {
     background-color: #000000;
     border-right: 1px solid #262626;
 }
 
-
-/* Sidebar button fix */
 section[data-testid="stSidebar"] button {
     background-color: #ffffff !important;
     color: #000000 !important;
@@ -73,13 +77,11 @@ section[data-testid="stSidebar"] button {
     border: none;
 }
 
-/* Button icon */
 section[data-testid="stSidebar"] button svg {
     fill: #000000 !important;
 }
 
-
-/* ===== Chat Input ===== */
+/* Chat input */
 div[data-testid="stChatInput"] textarea {
     background-color: #0a0a0a;
     color: #ffffff;
@@ -92,7 +94,7 @@ div[data-testid="stChatInput"] textarea::placeholder {
     color: #737373;
 }
 
-/* ===== Chat Messages ===== */
+/* Messages */
 div[data-testid="stChatMessage"] {
     background-color: #000000;
     border-radius: 12px;
@@ -101,14 +103,8 @@ div[data-testid="stChatMessage"] {
     margin-bottom: 10px;
 }
 
-/* User message */
 div[data-testid="stChatMessage"][data-role="user"] {
     background-color: #0a0a0a;
-}
-
-/* Assistant message */
-div[data-testid="stChatMessage"][data-role="assistant"] {
-    background-color: #000000;
 }
 
 /* Code blocks */
@@ -119,7 +115,7 @@ pre {
     border: 1px solid #262626;
 }
 
-/* Scrollbar (optional, clean look) */
+/* Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -130,17 +126,19 @@ pre {
 </style>
 """, unsafe_allow_html=True)
 
+# ================== Header ==================
 st.markdown("""
 <div class="header">
     <h1>M-NeuraChat</h1>
-    <p>Powered by OpenRouter • Built with Streamlit</p>
+    <p>Powered by Google Gemini • Built with Streamlit</p>
 </div>
 """, unsafe_allow_html=True)
 
+# ================== Sidebar ==================
 with st.sidebar:
     st.header(" Settings")
     st.markdown("**Model in use**")
-    st.code(MODEL)
+    st.code("gemini-1.5-flash")
 
     if st.button("🗑 Clear Chat"):
         st.session_state.messages = []
@@ -150,16 +148,18 @@ with st.sidebar:
     st.markdown("""
 <small>
 Developed by Mayur<br>
- <a href="https://github.com/mayurcodes01" target="_blank" style="color:#a3a3a3; text-decoration:none;">
+<a href="https://github.com/mayurcodes01" target="_blank"
+style="color:#a3a3a3; text-decoration:none;">
 GitHub Repository
 </a>
 </small>
 """, unsafe_allow_html=True)
 
-
+# ================== Chat State ==================
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# ================== Display Messages ==================
 with st.container():
     st.markdown('<div class="chat-box">', unsafe_allow_html=True)
 
@@ -169,31 +169,22 @@ with st.container():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-user_input = st.chat_input("Ask anything...")
-
+# ================== Gemini Response Function ==================
 def get_ai_response(messages):
     try:
-        response = requests.post(
-            API_URL,
-            headers={
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": MODEL,
-                "messages": messages
-            },
-            timeout=30
+        chat = model.start_chat(
+            history=[
+                {"role": m["role"], "parts": [m["content"]]}
+                for m in messages[:-1]
+            ]
         )
+        response = chat.send_message(messages[-1]["content"])
+        return response.text
+    except Exception as e:
+        return f"Error: {str(e)}"
 
-        if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"]
-        return f" API Error ({response.status_code})"
-
-    except requests.exceptions.Timeout:
-        return "⏱Request timed out. Please try again."
-    except requests.exceptions.RequestException as e:
-        return f" Network error: {str(e)}"
+# ================== User Input ==================
+user_input = st.chat_input("Ask anything...")
 
 if user_input:
     st.session_state.messages.append({
@@ -213,7 +204,3 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
-
-
-
-
