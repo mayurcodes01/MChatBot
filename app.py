@@ -147,7 +147,15 @@ with st.sidebar:
         st.rerun()
 
     st.markdown("---")
-    st.markdown("<small>Developed by Mayur</small>", unsafe_allow_html=True)
+    st.markdown("""
+<small>
+Developed by Mayur<br>
+ <a href="https://github.com/mayurcodes01" target="_blank" style="color:#a3a3a3; text-decoration:none;">
+GitHub Repository
+</a>
+</small>
+""", unsafe_allow_html=True)
+
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -205,6 +213,7 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
 
 
 
