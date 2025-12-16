@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-import google.generativeai as genai
+from google import genai
 
 # ================== Page Config ==================
 st.set_page_config(
@@ -9,15 +9,15 @@ st.set_page_config(
     layout="centered"
 )
 
-# ================== Gemini Setup ==================
+# ================== Gemini Client ==================
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
     st.error("GEMINI_API_KEY not found. Set it as an environment variable.")
     st.stop()
 
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
+client = genai.Client(api_key=GEMINI_API_KEY)
+MODEL_NAME = "gemini-2.5-flash"
 
 # ================== Styles ==================
 st.markdown("""
@@ -32,7 +32,6 @@ html, body, [class*="css"] {
     background-color: #000000;
 }
 
-/* Header */
 .header {
     background-color: #000000;
     padding: 24px;
@@ -55,7 +54,6 @@ html, body, [class*="css"] {
     font-size: 0.95rem;
 }
 
-/* Chat container */
 .chat-box {
     background-color: #000000;
     padding: 16px;
@@ -63,7 +61,6 @@ html, body, [class*="css"] {
     border: 1px solid #262626;
 }
 
-/* Sidebar */
 section[data-testid="stSidebar"] {
     background-color: #000000;
     border-right: 1px solid #262626;
@@ -81,7 +78,6 @@ section[data-testid="stSidebar"] button svg {
     fill: #000000 !important;
 }
 
-/* Chat input */
 div[data-testid="stChatInput"] textarea {
     background-color: #0a0a0a;
     color: #ffffff;
@@ -94,7 +90,6 @@ div[data-testid="stChatInput"] textarea::placeholder {
     color: #737373;
 }
 
-/* Messages */
 div[data-testid="stChatMessage"] {
     background-color: #000000;
     border-radius: 12px;
@@ -107,7 +102,6 @@ div[data-testid="stChatMessage"][data-role="user"] {
     background-color: #0a0a0a;
 }
 
-/* Code blocks */
 pre {
     background-color: #0a0a0a !important;
     border-radius: 10px;
@@ -115,7 +109,6 @@ pre {
     border: 1px solid #262626;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -138,7 +131,7 @@ st.markdown("""
 with st.sidebar:
     st.header(" Settings")
     st.markdown("**Model in use**")
-    st.code("gemini-1.5-flash")
+    st.code(MODEL_NAME)
 
     if st.button("🗑 Clear Chat"):
         st.session_state.messages = []
@@ -172,14 +165,19 @@ with st.container():
 # ================== Gemini Response Function ==================
 def get_ai_response(messages):
     try:
-        chat = model.start_chat(
-            history=[
-                {"role": m["role"], "parts": [m["content"]]}
-                for m in messages[:-1]
-            ]
+        contents = []
+        for m in messages:
+            contents.append({
+                "role": m["role"],
+                "parts": [{"text": m["content"]}]
+            })
+
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=contents
         )
-        response = chat.send_message(messages[-1]["content"])
         return response.text
+
     except Exception as e:
         return f"Error: {str(e)}"
 
