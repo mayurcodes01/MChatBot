@@ -170,8 +170,7 @@ def get_ai_response(messages):
         contents = [
             {
                 "role": m["role"],
-                "parts": [{"text": m["content"]}]
-            }
+        "parts": [{"text": "Answer briefly and directly. Do not explain reasoning."}]            }
             for m in messages
         ]
 
@@ -208,4 +207,5 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
 
