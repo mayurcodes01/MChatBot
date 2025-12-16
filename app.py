@@ -167,24 +167,25 @@ with st.container():
 # ================== Gemini Response Function ==================
 def get_ai_response(messages):
     try:
-        contents = [
-            {
-                "role": m["role"],
-        "parts": [{"text": "Answer briefly and directly. Do not explain reasoning."}]            }
-            for m in messages
-        ]
+        contents = []
+
+        for m in messages:
+            role = "user" if m["role"] == "user" else "model"
+            contents.append({
+                "role": role,
+                "parts": [{"text": m["content"]}]
+            })
 
         response = client.models.generate_content(
             model=MODEL_NAME,
-            contents=contents,
-            config=types.GenerateContentConfig()
-
+            contents=contents
         )
 
         return response.text
 
     except Exception as e:
         return f"Error: {str(e)}"
+
 
 # ================== User Input ==================
 user_input = st.chat_input("Ask anything...")
@@ -207,5 +208,6 @@ if user_input:
         "role": "assistant",
         "content": reply
     })
+
 
 
