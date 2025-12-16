@@ -3,7 +3,7 @@ import requests
 import json
 import os
 
-st.set_page_config(page_title="AI Chatbot", page_icon="🤖")
+st.set_page_config(page_title="Mayur's AI Chatbot", page_icon="🤖")
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 MODEL = "google/gemma-3n-e4b-it:free"
@@ -50,3 +50,4 @@ if user_input:
 
     with st.chat_message("assistant"):
         st.markdown(reply)
+
