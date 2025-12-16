@@ -8,7 +8,7 @@ st.set_page_config(page_title="Mayur's AI Chatbot", page_icon="🤖")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 MODEL = "google/gemma-3n-e4b-it:free"
 
-st.title(" AI Chatbot")
+st.title(" Mayur's AI Chatbot")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -50,4 +50,5 @@ if user_input:
 
     with st.chat_message("assistant"):
         st.markdown(reply)
+
 
